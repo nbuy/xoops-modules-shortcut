@@ -1,5 +1,5 @@
 <?php
-// $Id: index.php,v 1.1 2006/02/23 12:38:43 nobu Exp $
+// $Id: index.php,v 1.2 2006/04/04 15:01:51 nobu Exp $
 
 include("../../../mainfile.php");
 include(XOOPS_ROOT_PATH."/include/cp_functions.php");
@@ -47,15 +47,24 @@ switch ($op) {
      $res = $xoopsDB->query('SELECT * FROM '.SHORT.' ORDER BY cutid');
      $total = $xoopsDB->getRowsNum($res);
      echo "<table class='outer' cellpadding='4' border='0' cellspacing='1'>\n";
-     echo "<tr><th>".join('</th><th>', array(_AM_SHORTCUT_ID,_AM_UPDATE_TIME,_AM_SHORTCUT_URL,_AM_SHORTCUT_ACT,_AM_SHORTCUT_REF,_AM_SHORTCUT_LINK))."</th></tr>\n";
+     echo "<tr><th>".join('</th><th>', array(_AM_SHORTCUT_ID,_AM_UPDATE_TIME,_AM_SHORTCUT_URL,_AM_SHORTCUT_ACT,_AM_SHORTCUT_REF,_AM_SHORTCUT_OP))."</th></tr>\n";
      if ($total) {
 	 $n = 0;
 	 $n = 0;
+	 if (file_exists(XOOPS_ROOT_PATH._AM_SHORTCUT_BASE.'/index.php')) {
+	     $base = XOOPS_URL._AM_SHORTCUT_BASE;
+	 } else {
+	     $base = XOOPS_URL.'/modules/'.basename(dirname(dirname(__FILE__))).'/';
+	 }
+	 XOOPS_URL._AM_SHORTCUT_BASE;
 	 while($data = $xoopsDB->fetchArray($res)) {
-	     $link = _AM_SHORTCUT_BASE.$data['cutid'];
-	     $data['link'] = "<a href='$link'>$link</a>";
+	     $cutid = $data['cutid'];
+	     $link = "$base/?$cutid";
+	     $data['cutid'] = "<a href='$link'>$cutid</a>";
 	     $data['mdate'] = formatTimestamp($data['mdate']);
-	     $data['cutid'] = "<a href='index.php?op=edit&amp;cutid=".$data['cutid']."'/>".$data['cutid']."</a>";
+	     $data['op'] = "<a href='index.php?op=edit&cutid=$cutid'/>".
+		  _EDIT."</a> | <a href='index.php?op=del&cutid=$cutid'>".
+		  _DELETE."</a>";
 	     $data['active'] = $data['active']?_YES:_NO;
 	     $url = $data['url'];
 	     if (strlen($url)>40) {
@@ -98,39 +107,11 @@ switch ($op) {
      echo "<div><input type='submit'/></div>\n";
      echo "</form>\n";
      break;
+
+ case 'del':
+     echo "<div class='confirmMsg'>Are you sure?</div>";
+     break;
 }
 
 xoops_cp_footer();
-exit;
-
-function select_plugin($def="") {
-    global $xoopsModule;
-    $base = XOOPS_ROOT_PATH."/modules/".$xoopsModule->getVar("dirname")."/plugin";
-    $dh = opendir($base);
-    $pairs = array();
-    while($file = readdir($dh)) {
-	if (preg_match('/\.php$/', $file)) {
-	    $ret = include "$base/$file";
-	    $pairs[$file] = $plugin;
-	}
-    }
-    $name = "plugin";
-    $ret = "<select name='$name'>\n";
-    $null = false;
-    if ($null) $ret .= "<option value=''>---</option>\n";
-    foreach ($pairs as $id=>$val) {
-	$sel=($id==$def)?" selected":"";
-	$ret .= "<option value='$id'$sel>$val</option>\n";
-    }
-    return $ret."</select>\n";
-}
-
-function short_ancker($url, $n = 20) {
-    if (strlen($url)>20) {
-	$a = "...".substr($url, strlen($url)-20);
-    } else {
-	$a = $url;
-    }
-    return "<a href='$url'>$a</a>";
-}
 ?>
