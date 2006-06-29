@@ -1,5 +1,5 @@
 <?php
-// $Id: admin.php,v 1.2 2006/04/04 15:01:51 nobu Exp $
+// $Id: admin.php,v 1.3 2006/06/29 13:31:12 nobu Exp $
 
 define("_AM_SHORTCUT_LIST","ショートカット一覧");
 
@@ -11,6 +11,7 @@ define("_AM_SHORTCUT_ACT","利用可能");
 define("_AM_SHORTCUT_REF","参照数");
 define("_AM_SHORTCUT_BASE","/sc");
 define("_AM_SHORTCUT_OP","操作");
+define("_AM_SHORTCUT_DEL","削除していいですか?");
 
 define("_AM_UPDATE_TIME","更新日時");
 

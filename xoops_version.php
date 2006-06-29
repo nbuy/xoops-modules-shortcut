@@ -1,9 +1,9 @@
 <?php
-// $Id: xoops_version.php,v 1.2 2006/04/04 15:01:51 nobu Exp $
+// $Id: xoops_version.php,v 1.3 2006/06/29 13:31:12 nobu Exp $
 // 
 $modversion =
       array('name' => _MI_SHORTCUT_NAME,
-	    'version' => 0.1,
+	    'version' => 0.2,
 	    'description' => _MI_SHORTCUT_DESC,
 	    'author' => "Nobuhiro YASUTOMI <nobuhiro.yasutomi@nifty.ne.jp>",
 	    'credits' => "Nobuhiro YASUTOMI <br/>http://mysite.ddo.jp/",
@@ -19,8 +19,7 @@ $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
 //$modversion['sqlfile']['postgresql'] = "sql/pgsql.sql";
 
 // Tables created by sql file (without prefix!)
-$modversion['tables'][0] = "shortcut";
-//$modversion['tables'][1] = "";
+$modversion['tables'] = array("shortcut");
 
 // Admin things
 $modversion['hasAdmin'] = 1;

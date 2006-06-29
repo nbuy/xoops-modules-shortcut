@@ -1,10 +1,12 @@
 <?php
-// $Id: index.php,v 1.2 2006/04/04 15:01:51 nobu Exp $
+// $Id: index.php,v 1.3 2006/06/29 13:31:12 nobu Exp $
 
 include("../../../mainfile.php");
 include(XOOPS_ROOT_PATH."/include/cp_functions.php");
-if ( file_exists( "../language/" . $xoopsConfig['language'] . "/admin.php" ) ) {
-    include "../language/" . $xoopsConfig['language'] . "/admin.php";
+if ( file_exists( "../language/".$xoopsConfig['language']."/admin.php" ) ) {
+    include "../language/".$xoopsConfig['language']."/admin.php";
+} else {
+    include "../language/english/admin.php";
 }
 
 $op = isset($_GET['op'])?$_GET['op']:'list';
@@ -31,9 +33,9 @@ if ($op == 'store') {
 	exit;
     }
     $op = 'reg';
-} elseif ($op == 'cdel') {
-     $id = intval($_POST['id']);
-     $xoopsDB->query("DELETE FROM $tbl WHERE hookid=$id");
+} elseif ($op == 'delete') {
+     $cutid = $myts->oopsStripSlashesGPC($_POST['cutid']);
+     $xoopsDB->query("DELETE FROM ".SHORT." WHERE cutid=".q($cutid));
      redirect_header("index.php", 1, _AM_DBUPDATED);
      exit;
 }
@@ -109,7 +111,17 @@ switch ($op) {
      break;
 
  case 'del':
-     echo "<div class='confirmMsg'>Are you sure?</div>";
+     $cutid = $myts->oopsStripSlashesGPC($_GET['cutid']);
+     $res=$xoopsDB->query('SELECT url FROM '.SHORT.' WHERE cutid='.q($cutid));
+     list($url)=$xoopsDB->fetchRow($res);
+     $id = htmlspecialchars($cutid);
+     echo "<div class='confirmMsg'><p>$id --&gt; ".htmlspecialchars($url).
+	 "<br/>"._AM_SHORTCUT_DEL."</p>
+<form action='index.php?op=delete' method='POST'>
+<input type='submit' value='"._DELETE."'/>
+<input type='hidden' name='cutid' value='$id'/>
+</form><br/>
+</div>";
      break;
 }
 
