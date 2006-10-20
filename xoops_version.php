@@ -1,9 +1,9 @@
 <?php
-// $Id: xoops_version.php,v 1.3 2006/06/29 13:31:12 nobu Exp $
+// $Id: xoops_version.php,v 1.4 2006/10/20 06:37:45 nobu Exp $
 // 
 $modversion =
       array('name' => _MI_SHORTCUT_NAME,
-	    'version' => 0.2,
+	    'version' => 0.3,
 	    'description' => _MI_SHORTCUT_DESC,
 	    'author' => "Nobuhiro YASUTOMI <nobuhiro.yasutomi@nifty.ne.jp>",
 	    'credits' => "Nobuhiro YASUTOMI <br/>http://mysite.ddo.jp/",

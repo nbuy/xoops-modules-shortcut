@@ -1,5 +1,5 @@
 <?php
-// $Id: index.php,v 1.3 2006/06/29 13:31:12 nobu Exp $
+// $Id: index.php,v 1.4 2006/10/20 06:37:45 nobu Exp $
 
 include("../../../mainfile.php");
 include(XOOPS_ROOT_PATH."/include/cp_functions.php");
@@ -52,16 +52,16 @@ switch ($op) {
      echo "<tr><th>".join('</th><th>', array(_AM_SHORTCUT_ID,_AM_UPDATE_TIME,_AM_SHORTCUT_URL,_AM_SHORTCUT_ACT,_AM_SHORTCUT_REF,_AM_SHORTCUT_OP))."</th></tr>\n";
      if ($total) {
 	 $n = 0;
-	 $n = 0;
-	 if (file_exists(XOOPS_ROOT_PATH._AM_SHORTCUT_BASE.'/index.php')) {
-	     $base = XOOPS_URL._AM_SHORTCUT_BASE;
+	 if (file_exists(XOOPS_ROOT_PATH._AM_SHORTCUT_HOOK)) {
+	     $base = XOOPS_URL._AM_SHORTCUT_HOOK."/%s";
+	 } elseif (file_exists(XOOPS_ROOT_PATH._AM_SHORTCUT_BASE.'/index.php')) {
+	     $base = XOOPS_URL._AM_SHORTCUT_BASE."?%s";
 	 } else {
-	     $base = XOOPS_URL.'/modules/'.basename(dirname(dirname(__FILE__))).'/';
+	     $base = XOOPS_URL.'/modules/'.basename(dirname(dirname(__FILE__)))."?%s";
 	 }
-	 XOOPS_URL._AM_SHORTCUT_BASE;
 	 while($data = $xoopsDB->fetchArray($res)) {
 	     $cutid = $data['cutid'];
-	     $link = "$base/?$cutid";
+	     $link = sprintf($base, $cutid);
 	     $data['cutid'] = "<a href='$link'>$cutid</a>";
 	     $data['mdate'] = formatTimestamp($data['mdate']);
 	     $data['op'] = "<a href='index.php?op=edit&cutid=$cutid'/>".
