@@ -1,11 +1,12 @@
 <?php
-// $Id: sc.php,v 1.3 2006/10/20 06:37:45 nobu Exp $
+// $Id: sc.php,v 1.4 2006/10/20 06:40:18 nobu Exp $
 
 // NOTE: this file put(copied) on short path lenght directory
 // e.g.  XOOPS_ROOT_PATH/sc/index.php
 
-if (file_exists('../mainfile.php')) include '../mainfile.php';
-else  include '../../mainfile.php';
+if (file_exists('../../mainfile.php')) include '../../mainfile.php';
+elseif (file_exists('../mainfile.php')) include '../mainfile.php';
+else include 'mainfile.php';
 
 if (empty($_GET)) {
     $key = basename($_SERVER["REQUEST_URI"]);
