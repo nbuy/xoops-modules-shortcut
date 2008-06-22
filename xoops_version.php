@@ -1,9 +1,9 @@
 <?php
-// $Id: xoops_version.php,v 1.4 2006/10/20 06:37:45 nobu Exp $
+// $Id: xoops_version.php,v 1.5 2008/06/22 08:28:40 nobu Exp $
 // 
 $modversion =
       array('name' => _MI_SHORTCUT_NAME,
-	    'version' => 0.3,
+	    'version' => 0.41,
 	    'description' => _MI_SHORTCUT_DESC,
 	    'author' => "Nobuhiro YASUTOMI <nobuhiro.yasutomi@nifty.ne.jp>",
 	    'credits' => "Nobuhiro YASUTOMI <br/>http://mysite.ddo.jp/",
@@ -21,8 +21,29 @@ $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
 // Tables created by sql file (without prefix!)
 $modversion['tables'] = array("shortcut");
 
+// OnUpdate - upgrade DATABASE 
+$modversion['onUpdate'] = "onupdate.php";
+
 // Admin things
 $modversion['hasAdmin'] = 1;
 $modversion['adminindex'] = "admin/index.php";
-//$modversion['adminmenu'] = "admin/menu.php";
+$modversion['adminmenu'] = "admin/menu.php";
+
+// Templates
+$modversion['templates'][]=array('file' => 'shortcut_index.html',
+				 'description' => '');
+$modversion['templates'][]=array('file' => 'shortcut_register.html',
+				 'description' => '');
+// Blocks
+$modversion['blocks'][1]=
+    array('file' => "shortcut_block.php",
+	  'name' => _MI_SHORTCUT_BLOCK_MENU,
+	  'description' => _MI_SHORTCUT_BLOCK_MENU_DESC,
+	  'show_func' => "b_shortcut_show",
+	  'edit_func' => "b_shortcut_edit",
+	  'options' => '',
+	  'template' => 'shortcut_block_menu.html');
+
+// Menu
+$modversion['hasMain'] = 1;
 ?>

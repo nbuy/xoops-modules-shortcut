@@ -1,0 +1,24 @@
+<{if $block.links}>
+  <ul class="sc_menu">
+    <{foreach item=l from=$block.links}>
+      <li><a href="<{$l.uri|escape}>"<{if $l.current}>style="font-weight: bold;"<{/if}>><{$l.title|escape}></a>
+	<{if $l.sub}>
+	  <ul class="sc_sub"<{if empty($l.current) && empty($l.selected)}> style="display: none;"<{/if}>>
+	    <{foreach item=s from=$l.sub}>
+	    <li><a href="<{$s.uri|escape}>"<{if $s.current}>style="font-weight: bold;"<{/if}>><{$s.title|escape}></a></li>
+	    <{/foreach}>
+	  </ul>
+	<{/if}>
+      </li>
+    <{/foreach}>
+  </ul>
+<{/if}>
+<{if $block.action && $xoops_isuser && $block.thispage}>
+<p>
+<form action="<{$block.action}>" method="post">
+  <input type="hidden" name="url" value="<{$block.thispage}>" />
+  <input type="hidden" name="title" value="<{$xoops_pagetitle}>" />
+  <input type="submit" value="<{$smarty.const._BL_SHORTCUT_MARK}>" />
+</form>
+</p>
+<{/if}>

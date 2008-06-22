@@ -1,0 +1,51 @@
+<form method="post">
+  <input type="hidden" name="scid" value="<{$link.scid}>" />
+  <table class="outer" cellspacing="1" cellpadding="2">
+    <tr class="even">
+      <td class="head"><{$smarty.const._MD_FORM_TITLE}></td>
+      <td><input name="title" size="40" maxlength="80" value="<{$link.title|escape}>" /></td>
+    </tr>
+    <tr class="odd">
+      <td class="head"><{$smarty.const._MD_FORM_URL}></td>
+      <td><input name="url" size="40" value="<{$link.url|escape}>" /></td>
+    </tr>
+    <tr class="even">
+      <td class="head"><{$smarty.const._MD_FORM_CUTID}></td>
+      <td><input name="cutid" size="16" maxlength="16" value="<{$link.cutid}>" /></td>
+    </tr>
+    <tr class="odd">
+      <td class="head"><{$smarty.const._MD_FORM_PSCREF}></td>
+      <td>
+	<select name="pscref">
+	  <option value="0"><{$smarty.const._MD_PSCREF_TOP}></option>
+	  <{foreach from=$pscrefs key=value item=plink}>
+	  <option value="<{$value}>" title="<{$plink.url|escape}>"<{if $value==$link.pscref}> selected="selected"<{/if}>><{$plink.title|escape}></option>
+	  <{/foreach}>
+	</select>
+      </td>
+    </tr>
+    <tr class="even">
+      <td class="head"><{$smarty.const._MD_FORM_DESCRIPTION}></td>
+      <td><textarea cols="40" rows="8" name="description" style="width: 98%;"><{$link.description|escape}></textarea></td>
+    </tr>
+    <tr class="odd">
+      <td class="head"><{$smarty.const._MD_FORM_ACTIVE}></td>
+      <td>
+	<select name="active">
+	  <{foreach from=$active_status key=value item=label}>
+	  <option value="<{$value}>"<{if $value==$link.active}> selected="selected"<{/if}>><{$label|escape}></option>
+	  <{/foreach}>
+	</select>
+      </td>
+    </tr>
+    <tr class="even">
+      <td class="head"><{$smarty.const._MD_FORM_ORDER}></td>
+      <td><input name="weight" size="4" value="<{$link.weight}>" />
+	<div class="note"><{$smarty.const._MD_FORM_ORDER_DESC}></div>
+      </td>
+    </tr>
+    <tr class="odd"><td class="head"></td>
+      <td><input type="submit" name="save" value="<{$smarty.const._SUBMIT}>" /></td>
+    </tr>
+  </table>
+</form>
