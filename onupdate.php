@@ -1,6 +1,6 @@
 <?php
 # eguide module onUpdate proceeding.
-# $Id: onupdate.php,v 1.1 2008/06/22 08:28:40 nobu Exp $
+# $Id: onupdate.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
 
 global $xoopsDB;
 

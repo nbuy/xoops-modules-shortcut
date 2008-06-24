@@ -6,8 +6,8 @@
       <{if $l.owner}>
       <span class="admin">[<a href="register.php?scid=<{$l.scid}>"><{$smarty.const._EDIT}></a>]</span>
       <{/if}>
-      <div class="date"><{$smarty.const._MD_SHORTCUT_MDATE}><{$l.mdate}></div>
-      <div class="description"><{$l.description}></div>
+      <div class="date"><{$smarty.const._MD_SHORTCUT_MDATE}>: <{$l.mdate}></div>
+      <p class="description"><{$l.description}></p>
       <{if $l.sub}>
 	<ol id="shortcut_list">
 	<{foreach item=s from=$l.sub}>
@@ -16,10 +16,8 @@
 	    <{if $s.owner}>
 	    <span class="admin">[<a href="register.php?scid=<{$s.scid}>"><{$smarty.const._EDIT}></a>]</span>
 	    <{/if}>
-	    <div class="date"><{$smarty.const._MD_SHORTCUT_MDATE}><{$s.mdate}></div>
-	    <div class="description"><{$s.description}></div>
-	    <{if $s.sub}>
-	    <{/if}>
+	    <div class="date"><{$smarty.const._MD_SHORTCUT_MDATE}>: <{$s.mdate}></div>
+	    <p class="description"><{$s.description}></p>
 	  </li>
 	<{/foreach}>
 	</ol>

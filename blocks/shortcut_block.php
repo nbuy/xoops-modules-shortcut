@@ -1,5 +1,5 @@
 <?php
-// $Id: shortcut_block.php,v 1.1 2008/06/22 08:28:40 nobu Exp $
+// $Id: shortcut_block.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
 
 function b_shortcut_show($options) {
     global $xoopsDB, $xoopsUser;
@@ -21,9 +21,11 @@ function b_shortcut_show($options) {
 	$row['uri'] = $url = eval_url($row['url']);
 	$current = ($url==$thispage);
 	if (!$current && substr($url, strlen($url)-1, 1)=='/' &&
-	    $url.'index.php' == $thispage) $current = true;
+	    $url.'index.php' == $thispage) {
+	    $current = true;
+	}
 	$id = $row['scid'];
-	$row['current'] = $current;
+	$row['current'] = $row['selected'] =$current;
 	$items[$id] = $row;
 
 	if ($row['pscref']) {

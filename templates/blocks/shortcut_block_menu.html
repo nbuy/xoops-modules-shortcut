@@ -1,9 +1,15 @@
 <{if $block.links}>
+  <style>
+<!--
+    ul.sc_menu li { line-height: 1.5em; list-style: none; }
+    ul.sc_menu>li.off { height: 1.5em; overflow: hidden; }
+    ul.sc_menu>li.off:hover {  height: auto; overflow: visible; }
+--></style>
   <ul class="sc_menu">
     <{foreach item=l from=$block.links}>
-      <li><a href="<{$l.uri|escape}>"<{if $l.current}>style="font-weight: bold;"<{/if}>><{$l.title|escape}></a>
+      <li class="<{if $l.selected}>on<{else}>off<{/if}>"><a href="<{$l.uri|escape}>" <{if $l.current}>style="font-weight: bold;"<{/if}>><{$l.title|escape}></a>
 	<{if $l.sub}>
-	  <ul class="sc_sub"<{if empty($l.current) && empty($l.selected)}> style="display: none;"<{/if}>>
+	  <ul class="sc_sub">
 	    <{foreach item=s from=$l.sub}>
 	    <li><a href="<{$s.uri|escape}>"<{if $s.current}>style="font-weight: bold;"<{/if}>><{$s.title|escape}></a></li>
 	    <{/foreach}>

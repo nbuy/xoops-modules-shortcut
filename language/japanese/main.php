@@ -1,5 +1,5 @@
 <?php
-// $Id: main.php,v 1.1 2008/06/22 08:28:40 nobu Exp $
+// $Id: main.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
 
 define("_MD_SHORTCUT_REGISTER","ショートカットの登録");
 
@@ -8,7 +8,7 @@ define("_MD_REGISTER_EDIT","編集");
 define("_MD_FORM_TITLE","タイトル");
 define("_MD_FORM_URL","リンク先");
 define("_MD_FORM_PSCREF","親階層");
-define("_MD_PSCREF_TOP","トップ");
+define("_MD_PSCREF_TOP","[トップ]");
 define("_MD_FORM_CUTID","リンクID");
 define("_MD_FORM_CUTID_DESC","リンクIDは、ページに付けるユニークな文字列。短い代替 URL を作る場合のキーとして使う");
 define("_MD_FORM_DESCRIPTION","説明文");

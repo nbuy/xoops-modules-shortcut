@@ -1,5 +1,5 @@
 <?php
-// $Id: main.php,v 1.1 2008/06/22 08:28:40 nobu Exp $
+// $Id: main.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
 
 define("_MD_SHORTCUT_REGISTER","Register shortcut link");
 
@@ -8,7 +8,7 @@ define("_MD_REGISTER_EDIT","Edit");
 define("_MD_FORM_TITLE","Title");
 define("_MD_FORM_URL","Linked URI");
 define("_MD_FORM_PSCREF","Parent Link");
-define("_MD_PSCREF_TOP","Top");
+define("_MD_PSCREF_TOP","[Top]");
 define("_MD_FORM_CUTID","Link ID");
 define("_MD_FORM_CUTID_DESC","'Link ID' is a unique string. That is used make short URI for redirect to Linked URI.");
 define("_MD_FORM_DESCRIPTION","Description");

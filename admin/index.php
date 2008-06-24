@@ -1,31 +1,24 @@
 <?php
-// $Id: index.php,v 1.5 2008/06/22 08:28:40 nobu Exp $
+// $Id: index.php,v 1.6 2008/06/24 14:29:22 nobu Exp $
 
 include '../../../include/cp_header.php';
 include_once '../functions.php';
+include_once '../edit_func.php';
 
 $op = isset($_GET['op'])?$_GET['op']:'list';
 
 define('SHORT', $xoopsDB->prefix("shortcut"));
-$myts =& MyTextSanitizer::getInstance();
-function q($x) { return "'".addslashes($x)."'"; }
-if ($op == 'store') {
-    $data = array();
-    foreach (array('cutid', 'title', 'url') as $key) {
-	$data[$key] = $xoopsDB->quoteString($myts->stripSlashesGPC($_POST[$key]));
-    }
-    $data['active'] = empty($_POST['active'])?0:1;
+
+if (isset($_POST['save'])) {
+    $data = post_vars();
     $scid = intval($_POST['scid']);
-    $cutid = $myts->stripSlashesGPC($_POST['cutid']);
-    $data['mdate'] = time();
     if (!$scid) {		// new
-	$res = $xoopsDB->query("INSERT INTO ".SHORT." (".join(',', array_keys($data)).") VALUES(".join(',', $data).")");
-    } elseif (!empty($cutid)) {	// update
-	foreach ($data as $key => $val) {
-	    $data[$key] = $key.'='.$val;
-	}
-	$res = $xoopsDB->query("UPDATE ".SHORT." SET ".join(',', $data)." WHERE scid=".$scid);
+	$data['uid'] = 0;
+	$sql = "INSERT INTO ".SHORTCUT."(".join(',',array_keys($data)).")VALUES(".join_vars($data).")";
+    } else {	// update
+	$sql = "UPDATE ".SHORTCUT." SET ".join_vars($data, 1)." WHERE scid=".$scid;
     }
+    $res = $xoopsDB->query($sql);
     if ($res) {
 	redirect_header("index.php", 1, _AM_DBUPDATED);
 	exit;
@@ -74,10 +67,10 @@ switch ($op) {
      echo "<tr><th>".join('</th><th>', $ents)."</th><th>"._AM_SHORTCUT_OP."</th></tr>\n";
      if ($total) {
 	 $n = 0;
-	 if (file_exists(XOOPS_ROOT_PATH._AM_SHORTCUT_HOOK)) {
-	     $base = XOOPS_URL._AM_SHORTCUT_HOOK."/%s";
-	 } elseif (file_exists(XOOPS_ROOT_PATH._AM_SHORTCUT_BASE.'/index.php')) {
-	     $base = XOOPS_URL._AM_SHORTCUT_BASE."?%s";
+	 if (file_exists(XOOPS_ROOT_PATH._SC_SCRIPT_HOOK)) {
+	     $base = XOOPS_URL._SC_SCRIPT_HOOK."/%s";
+	 } elseif (file_exists(XOOPS_ROOT_PATH._SC_SCRIPT_BASE.'/index.php')) {
+	     $base = XOOPS_URL._SC_SCRIPT_BASE."?%s";
 	 } else {
 	     $base = XOOPS_URL.'/modules/'.basename(dirname(dirname(__FILE__)))."?%s";
 	 }
@@ -112,30 +105,10 @@ switch ($op) {
      $res = $xoopsDB->query('SELECT * FROM '.SHORT.' WHERE scid='.$scid);
      $data = $xoopsDB->fetchArray($res);
      echo "<h4>".(empty($data)?_AM_SHORTCUT_NEW:_AM_SHORTCUT_EDIT)."</h4>";
-     echo "<form action='index.php?op=store' method='post'>\n";
-     echo "<table cellpadding='4' cellspacing='1' border='0' class='outer'>\n";
-     echo "<tr><td class='head'>"._AM_SHORTCUT_ID."</td><td class='even'>".
-	 "<input type='hidden' name='scid' value='$scid'/>".
-	 "<input name='cutid' value='".$data['cutid']."' size='16'/>".
-	 "</td></tr>\n";
-     echo "<tr><td class='head'>"._AM_SHORTCUT_TITLE."</td><td class='even'>".
-	 "<input name='title' value='".$data['title']."' size='40'/>".
-	 "</td></tr>\n";
-     echo "<tr><td class='head'>"._AM_SHORTCUT_URL."</td><td class='even'><input name='url' value='".$data['url']."' size='60'/></td></tr>\n";
-     if (isset($data['active']) && !$data['active']) {
-	 $yes = "";
-	 $no = " checked";
-     } else {
-	 $yes = " checked";
-	 $no = "";
-     }
-     echo "<tr><td class='head'>"._AM_SHORTCUT_ACT."</td><td class='even'><input type='radio' name='active' value='1'$yes/>"._YES." &nbsp;<input type='radio' name='active' value='0'$no/>"._NO."</td></tr>\n";
-     if (isset($data['refer'])) {
-	 echo "<tr><td class='head'>"._AM_SHORTCUT_REF."</td><td class='even'>".$data['refer']."</td></tr>\n";
-     }
-     echo "</table>\n";
-     echo "<div><input type='submit'/></div>\n";
-     echo "</form>\n";
+     $xoopsTpl->assign('link', $data);
+     $xoopsTpl->assign('pscrefs', root_links(0));
+     $xoopsTpl->assign('active_status', explode(',', _MD_FORM_ACTIVE_VALUE));
+     echo $xoopsTpl->fetch("db:shortcut_register.html");
      break;
 
  case 'del':

@@ -1,8 +1,9 @@
 <?php
 # register bookmark
-# $Id: register.php,v 1.1 2008/06/22 08:28:40 nobu Exp $
+# $Id: register.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
 
 include "../../mainfile.php";
+include "edit_func.php";
 
 if (!is_object($xoopsUser)) {
     $back = empty($_SERVER['HTTP_REFERER'])?XOOPS_URL.'/':$_SERVER['HTTP_REFERER'];
@@ -10,38 +11,7 @@ if (!is_object($xoopsUser)) {
     exit;
 }
 $myts =& MyTextSanitizer::getInstance();
-define("SHORTCUT", $xoopsDB->prefix('shortcut'));
-
 $uid = $xoopsUser->getVar('uid');
-
-function post_vars() {
-    $myts =& MyTextSanitizer::getInstance();
-    $data = array('mdate'=>time());
-    foreach (explode(',', 'title,url,cutid,description,active,pscref,weight') as $key) {
-	switch ($key) {
-	case 'weight':
-	case 'pscref':
-	    $data[$key] = isset($_POST[$key])?intval($_POST[$key]):0;
-	    break;
-	default:
-	    $data[$key] = isset($_POST[$key])?$myts->stripSlashesGPC($_POST[$key]):'';
-	    break;
-	}
-    }
-    return $data;
-}
-function join_vars($data, $fname=false) {
-    global $xoopsDB;
-    $result = array();
-    foreach ($data as $k=>$v) {
-	if ($fname) {
-	    $result[] = "`$k`=".$xoopsDB->quoteString($v);
-	} else {
-	    $result[] = $xoopsDB->quoteString($v);
-	}
-    }
-    return join(',', $result);
-}
 
 $scid = isset($_POST['scid'])?intval($_POST['scid']):0;
 $data = post_vars();
@@ -108,8 +78,8 @@ $pscrefs = array();
 while (list($id,$title,$url) = $xoopsDB->fetchRow($res)) {
     $pscrefs[$id] = array('title'=>$title, 'url'=>$url);
 }
-$xoopsTpl->assign('pscrefs', $pscrefs);
-var_dump($pscrefs);
+
+$xoopsTpl->assign('pscrefs', root_links($uid));
 $xoopsTpl->assign('active_status', explode(',', _MD_FORM_ACTIVE_VALUE));
 
 include XOOPS_ROOT_PATH."/footer.php";
