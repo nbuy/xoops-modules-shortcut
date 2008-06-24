@@ -1,6 +1,6 @@
 <?php
 # register bookmark
-# $Id: register.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
+# $Id: register.php,v 1.3 2008/06/24 14:42:35 nobu Exp $
 
 include "../../mainfile.php";
 include "edit_func.php";
@@ -23,7 +23,7 @@ if (isset($_POST['save'])) {
 	if (empty($weight)) $weight = 0;
 	$data['weight']=$weight+1; // add tail list
     } else {			// conflict check
-	$res = $xoopsDB->query("SELECT count(scid) FROM ".SHORTCUT." WHERE weight=".$data['weight']." AND pscref=".$data['pscref']);
+	$res = $xoopsDB->query("SELECT count(scid) FROM ".SHORTCUT." WHERE scid<>$scid AND weight=".$data['weight']." AND pscref=".$data['pscref']);
 	list($count)=$xoopsDB->fetchRow($res);
 	if ($count) {		// insert order
 	    $res = $xoopsDB->query("UPDATE ".SHORTCUT." SET weight=weight+1 WHERE weight>=".$data['weight']." AND pscref=".$data['pscref']);
