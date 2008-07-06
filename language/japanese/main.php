@@ -1,10 +1,10 @@
 <?php
-// $Id: main.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
+// $Id: main.php,v 1.3 2008/07/06 07:47:21 nobu Exp $
 
 define("_MD_SHORTCUT_REGISTER","ショートカットの登録");
 
-define("_MD_REGISTER_NEW","新規登録");
-define("_MD_REGISTER_EDIT","編集");
+define("_MD_REGISTER_NEW","ショートカット新規登録");
+define("_MD_REGISTER_EDIT","ショートカット編集");
 define("_MD_FORM_TITLE","タイトル");
 define("_MD_FORM_URL","リンク先");
 define("_MD_FORM_PSCREF","親階層");

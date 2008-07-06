@@ -1,5 +1,5 @@
 <?php
-// $Id: index.php,v 1.7 2008/07/06 07:36:56 nobu Exp $
+// $Id: index.php,v 1.8 2008/07/06 07:47:21 nobu Exp $
 
 include '../../../include/cp_header.php';
 include_once '../functions.php';
@@ -77,7 +77,6 @@ switch ($op) {
      } else {
 	 $data = post_vars();
      }
-     echo "<h4>".(empty($data)?_AM_SHORTCUT_NEW:_AM_SHORTCUT_EDIT)."</h4>";
      $xoopsTpl->assign('link', $data);
      $xoopsTpl->assign('pscrefs', root_links(0, $scid));
      $xoopsTpl->assign('active_status', explode(',', _MD_FORM_ACTIVE_VALUE));

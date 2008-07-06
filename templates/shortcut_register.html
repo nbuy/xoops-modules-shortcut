@@ -1,4 +1,5 @@
 <form method="post">
+  <h2><{if $link.scid}><{$smarty.const._MD_REGISTER_EDIT}><{else}><{$smarty.const._MD_REGISTER_NEW}><{/if}></h2>
   <input type="hidden" name="scid" value="<{$link.scid}>" />
   <table class="outer" cellspacing="1" cellpadding="2">
     <tr class="even">

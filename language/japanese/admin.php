@@ -1,10 +1,8 @@
 <?php
-// $Id: admin.php,v 1.6 2008/06/24 14:29:22 nobu Exp $
+// $Id: admin.php,v 1.7 2008/07/06 07:47:21 nobu Exp $
 
 define("_AM_SHORTCUT_LIST","ショートカット一覧");
 
-define("_AM_SHORTCUT_NEW","新規ショートカット");
-define("_AM_SHORTCUT_EDIT","ショートカットの編集");
 define("_AM_SHORTCUT_ID","ID");
 define("_AM_SHORTCUT_TITLE","タイトル");
 define("_AM_SHORTCUT_USER","ユーザ");

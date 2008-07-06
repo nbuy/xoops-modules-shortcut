@@ -1,10 +1,8 @@
 <?php
-// $Id: admin.php,v 1.3 2008/06/24 14:29:22 nobu Exp $
+// $Id: admin.php,v 1.4 2008/07/06 07:47:21 nobu Exp $
 
 define("_AM_SHORTCUT_LIST","Resistered shortcuts");
 
-define("_AM_SHORTCUT_NEW","New Shortcut");
-define("_AM_SHORTCUT_EDIT","Edit Shortcut");
 define("_AM_SHORTCUT_ID","ID");
 define("_AM_SHORTCUT_TITLE","Title");
 define("_AM_SHORTCUT_USER","User");

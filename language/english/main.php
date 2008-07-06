@@ -1,10 +1,10 @@
 <?php
-// $Id: main.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
+// $Id: main.php,v 1.3 2008/07/06 07:47:21 nobu Exp $
 
 define("_MD_SHORTCUT_REGISTER","Register shortcut link");
 
-define("_MD_REGISTER_NEW","New");
-define("_MD_REGISTER_EDIT","Edit");
+define("_MD_REGISTER_NEW","New shortcut");
+define("_MD_REGISTER_EDIT","Edit shortcut");
 define("_MD_FORM_TITLE","Title");
 define("_MD_FORM_URL","Linked URI");
 define("_MD_FORM_PSCREF","Parent Link");
