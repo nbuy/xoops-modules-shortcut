@@ -1,47 +1,44 @@
 <?php
-// $Id: shortcut_block.php,v 1.2 2008/06/24 14:29:22 nobu Exp $
+// $Id: shortcut_block.php,v 1.3 2008/07/06 07:36:56 nobu Exp $
 
 function b_shortcut_show($options) {
-    global $xoopsDB, $xoopsUser;
+    global $xoopsDB, $xoopsUser, $xoopsModule;
     $myts =& MyTextSanitizer::getInstance();
     include_once dirname(dirname(__FILE__))."/functions.php";
-
-    $port = $_SERVER['SERVER_PORT'];
-    $thispage = ($port==443?'https':'http').'://'.$_SERVER['SERVER_NAME'].(($port==80||$port==443)?'':$port).$_SERVER['REQUEST_URI'];
-
     $mydirname = basename(dirname(dirname(__FILE__)));
-    $cond = "active="._SC_ACTIVE_PUBLIC." AND uid=0";
-    if (is_object($xoopsUser)) {
-	$cond = "($cond) OR (active<>"._SC_ACTIVE_NONE." AND uid=".$xoopsUser->getVar('uid').")";
-    }
-    $result = $xoopsDB->query("SELECT scid,pscref,url,title,uid FROM ".$xoopsDB->prefix("shortcut")." WHERE $cond ORDER BY uid,pscref,weight");
-    $items = array();
-    $links = array();
-    while ($row = $xoopsDB->fetchArray($result)) {
-	$row['uri'] = $url = eval_url($row['url']);
-	$current = ($url==$thispage);
-	if (!$current && substr($url, strlen($url)-1, 1)=='/' &&
-	    $url.'index.php' == $thispage) {
-	    $current = true;
-	}
-	$id = $row['scid'];
-	$row['current'] = $row['selected'] =$current;
-	$items[$id] = $row;
 
-	if ($row['pscref']) {
-	    $pid = $row['pscref'];
-	    $items[$pid]['sub'][] = &$items[$id];
-	    if ($current) $items[$pid]['selected'] = true;
+    $block = array();
+    $action = '';
+
+    if ($options[0]) {
+	if (!is_object($xoopsUser)) return $block;
+	$uid = $xoopsUser->getVar('uid');
+	if (is_object($xoopsModule) && $xoopsModule->getVar('dirname')==$mydirname) {
+	    $module =& $xoopsModule;
 	} else {
-	    $links[] = &$items[$id];
+	    $module_handler =& xoops_gethandler('module');
+	    $module =& $module_handler->getByDirname($mydirname);
 	}
-	if ($row['uid'] && $current) $thispage = ''; // already marked
+	if ($xoopsUser->isAdmin($module->getVar('mid'))) {
+	    $action = XOOPS_URL."/modules/$mydirname/register.php";
+	}
+    } else {
+	$uid = 0;
+	$action = XOOPS_URL."/modules/$mydirname/admin/index.php?op=edit";
     }
-    return array('links'=>$links, 'thispage'=>$thispage,
-		 'action'=>XOOPS_URL."/modules/$mydirname/register.php");
+    
+    $block['links'] = shortcut_links($uid, $thispage);
+    $block['action'] = $action;
+    $block['thispage'] = $thispage;
+    return $block;
 }
 
 function b_shortcut_edit($options) {
-    return '';
+    $buf = _BL_SHORTCUT_TYPE." <select name='options[]'>\n";
+    foreach (explode(',', _BL_SHORTCUT_TYPE_SELECT) as $k=>$v) {
+	$buf .= "<option value='$k'".($k==$options[0]?" selected='selected'":'').">$v</option>\n";
+    }
+    $buf .= "</select>\n";
+    return $buf;
 }
 ?>

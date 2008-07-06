@@ -22,6 +22,7 @@
 <{if $block.action && $xoops_isuser && $block.thispage}>
 <p>
 <form action="<{$block.action}>" method="post">
+  <input type="hidden" name="active" value="1" />
   <input type="hidden" name="url" value="<{$block.thispage}>" />
   <input type="hidden" name="title" value="<{$xoops_pagetitle}>" />
   <input type="submit" value="<{$smarty.const._BL_SHORTCUT_MARK}>" />

@@ -1,5 +1,5 @@
 <?php
-// $Id: index.php,v 1.6 2008/06/24 14:29:22 nobu Exp $
+// $Id: index.php,v 1.7 2008/07/06 07:36:56 nobu Exp $
 
 include '../../../include/cp_header.php';
 include_once '../functions.php';
@@ -12,14 +12,7 @@ define('SHORT', $xoopsDB->prefix("shortcut"));
 if (isset($_POST['save'])) {
     $data = post_vars();
     $scid = intval($_POST['scid']);
-    if (!$scid) {		// new
-	$data['uid'] = 0;
-	$sql = "INSERT INTO ".SHORTCUT."(".join(',',array_keys($data)).")VALUES(".join_vars($data).")";
-    } else {	// update
-	$sql = "UPDATE ".SHORTCUT." SET ".join_vars($data, 1)." WHERE scid=".$scid;
-    }
-    $res = $xoopsDB->query($sql);
-    if ($res) {
+    if (store_entry($data, $scid, 0)) {
 	redirect_header("index.php", 1, _AM_DBUPDATED);
 	exit;
     }
@@ -57,44 +50,20 @@ switch ($op) {
  case 'list':
      echo "<h4>"._AM_SHORTCUT_LIST."</h4>\n";
 
-     $ents = array('cutid'=>_AM_SHORTCUT_ID, 'uid'=>_AM_SHORTCUT_USER,
-		   'mdate'=>_AM_UPDATE_TIME, 'title'=>_AM_SHORTCUT_TITLE,
-		   'url'=>_AM_SHORTCUT_URL,  'active'=>_AM_SHORTCUT_ACT,
-		   'refer'=>_AM_SHORTCUT_REF,'weight'=>_AM_SHORTCUT_WEIGHT);
-     $res = $xoopsDB->query('SELECT * FROM '.SHORT.' ORDER BY cutid');
-     $total = $xoopsDB->getRowsNum($res);
+     $ents = array('title'=>_AM_SHORTCUT_TITLE, 'url'=>_AM_SHORTCUT_URL,
+		   'modified'=>_AM_UPDATE_TIME, 'cutid'=>_AM_SHORTCUT_ID,
+		   'active'=>_AM_SHORTCUT_ACT,  'refer'=>_AM_SHORTCUT_REF,
+		   'weight'=>_AM_SHORTCUT_WEIGHT);
      echo "<table class='outer' cellpadding='4' border='0' cellspacing='1'>\n";
      echo "<tr><th>".join('</th><th>', $ents)."</th><th>"._AM_SHORTCUT_OP."</th></tr>\n";
-     if ($total) {
-	 $n = 0;
-	 if (file_exists(XOOPS_ROOT_PATH._SC_SCRIPT_HOOK)) {
-	     $base = XOOPS_URL._SC_SCRIPT_HOOK."/%s";
-	 } elseif (file_exists(XOOPS_ROOT_PATH._SC_SCRIPT_BASE.'/index.php')) {
-	     $base = XOOPS_URL._SC_SCRIPT_BASE."?%s";
-	 } else {
-	     $base = XOOPS_URL.'/modules/'.basename(dirname(dirname(__FILE__)))."?%s";
-	 }
-	 while($data = $xoopsDB->fetchArray($res)) {
-	     $scid = $data['scid'];
-	     $cutid = $data['cutid'];
-	     $link = sprintf($base, $cutid);
-	     $data['cutid'] = "<a href='$link'>$cutid</a>";
-	     $data['mdate'] = formatTimestamp($data['mdate']);
-	     $data['uid'] = $data['uid']?xoops_getLinkedUnameFromId($data['uid']):_AM_SHORTCUT_GLOBAL;
-	     $op = "<a href='index.php?op=edit&scid=$scid'/>".
-		  _EDIT."</a> | <a href='index.php?op=del&scid=$scid'>".
-		  _DELETE."</a>";
-	     $data['active'] = $data['active']?_YES:_NO;
-	     $url = $data['url'];
-	     $aurl = eval_url($url);
-	     if (strlen($url)>40) $url = substr($url, 0, 38)."..";
-	     $data['url']="<a href='$aurl'>$url</a>";
-	     $bg = ++$n%2?"odd":"even";
-	     echo "<tr class='$bg'>";
-	     foreach ($ents as $key=>$lab) {
-		 echo "<td>".$data[$key]."</td>";
+
+     $links = shortcut_links(0, $thispage, _SC_ACTIVE_NONE.","._SC_ACTIVE_PUBLIC.","._SC_ACTIVE_PRIVATE);
+     foreach ($links as $k=>$data) {
+	 echo display_entry('', $data, $ents);
+	 if (!empty($data['sub'])) {
+	     foreach ($data['sub'] as $data) {
+		 echo display_entry(' &nbsp;&nbsp; ',  $data, $ents);
 	     }
-	     echo "<td>$op</td></td></tr>\n";
 	 }
      }
      echo "</table>\n";
@@ -103,10 +72,14 @@ switch ($op) {
  case 'edit':
      $scid = isset($_GET['scid'])?intval($_GET['scid']):0;
      $res = $xoopsDB->query('SELECT * FROM '.SHORT.' WHERE scid='.$scid);
-     $data = $xoopsDB->fetchArray($res);
+     if ($res && $xoopsDB->getRowsNum($res)) {
+	 $data = $xoopsDB->fetchArray($res);
+     } else {
+	 $data = post_vars();
+     }
      echo "<h4>".(empty($data)?_AM_SHORTCUT_NEW:_AM_SHORTCUT_EDIT)."</h4>";
      $xoopsTpl->assign('link', $data);
-     $xoopsTpl->assign('pscrefs', root_links(0));
+     $xoopsTpl->assign('pscrefs', root_links(0, $scid));
      $xoopsTpl->assign('active_status', explode(',', _MD_FORM_ACTIVE_VALUE));
      echo $xoopsTpl->fetch("db:shortcut_register.html");
      break;
@@ -126,4 +99,27 @@ switch ($op) {
 }
 
 xoops_cp_footer();
+
+function display_entry($pre, &$data, &$ents) {
+    static $n=0;
+    $scid = $data['scid'];
+    $cutid = $data['cutid'];
+    $link = shortcut_script().$cutid;
+    $data['cutid'] = "<a href='$link'>$cutid</a>";
+    $op = "<a href='index.php?op=edit&scid=$scid'/>".
+	_EDIT."</a> | <a href='index.php?op=del&scid=$scid'>".
+	_DELETE."</a>";
+    $data['active'] = $data['active']?_YES:_NO;
+    $url = $data['url'];
+    $aurl = eval_url($url);
+    if (strlen($url)>40) $url = substr($url, 0, 38)."..";
+    $data['url']="<a href='$aurl'>$url</a>";
+    $bg = ++$n%2?"odd":"even";
+    $buf = "<tr class='$bg'>";
+    foreach ($ents as $key=>$lab) {
+	$buf .= "<td>".($key=='title'?$pre:'').$data[$key]."</td>";
+    }
+    $buf .= "<td>$op</td></td></tr>\n";
+    return $buf;
+}
 ?>

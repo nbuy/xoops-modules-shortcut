@@ -20,10 +20,11 @@ td,th { padding: 4px; background: #e8e8e8;}
 
   <p>Upload module `shortcut' on your XOOPS site under `modules' directory.
   And install it.</p>
-  <p>For more convinient, make directory under XOOPS root (XOOPS_ROOT_PATH),
-  e.g. `sc'. And copy  (or linking) from `modules/shortcut/index.php' file.
+  <p>For more convinient, copy a file <tt>modules/shortcut/sc.php</tt> to XOOPS root (XOOPS_ROOT_PATH), you can redirect jump using "Link ID" in short url.
+    There is more smart way to use apache mod_rewrite.
   </p>
   <h2>How to use</h2>
+  Enable 
   In Administration page, Register shortcut `ID' and `URL' pair.<br/>
   You can access the URL via ``XOOPS_URL/sc?ID''.
 
@@ -35,12 +36,21 @@ td,th { padding: 4px; background: #e8e8e8;}
   <h2>Changes</h2>
 
 <dl>
-  <dd>2006/04/04 shortcut 0.1 Released</dd>
+  <dt>2008/07/06 shortcut 0.6 Released</dt>
+  <dd>
+    <ul>
+      <li>Add menu blocks</li>
+      <li>Support user private shortcut</li>
+      <li>Experimental weight control impliment</li>
+      <li>suport XOOPS 2.0/XCL 2.1</li>
+    </ul>
+  </dd>
+  <dt>2006/04/04 shortcut 0.1 Released</dt>
 </dl>
 
 <hr>
 <address>Nobuhiro Yasutomi &lt;<a href="mailto:nobuhiro.yasutomi@nifty.ne.jp">nobuhiro.yasutomi@nifty.ne.jp</a>&gt;</address>
 MySite Users <a href="http://mysite.ddo.jp/">http://mysite.ddo.jp/</a><br/>
-$Id: help.html,v 1.1 2006/04/04 15:01:51 nobu Exp $
+$Id: help.html,v 1.2 2008/07/06 07:36:56 nobu Exp $
 </body>
 </html>

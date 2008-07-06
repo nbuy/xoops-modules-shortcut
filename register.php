@@ -1,6 +1,6 @@
 <?php
 # register bookmark
-# $Id: register.php,v 1.3 2008/06/24 14:42:35 nobu Exp $
+# $Id: register.php,v 1.4 2008/07/06 07:36:56 nobu Exp $
 
 include "../../mainfile.php";
 include "edit_func.php";
@@ -17,27 +17,7 @@ $scid = isset($_POST['scid'])?intval($_POST['scid']):0;
 $data = post_vars();
 
 if (isset($_POST['save'])) {
-    if (empty($data['weight'])) {
-	$res = $xoopsDB->query("SELECT MAX(weight) FROM ".SHORTCUT." WHERE pscref=".$data['pscref']." GROUP BY pscref");
-	list($weight)=$xoopsDB->fetchRow($res);
-	if (empty($weight)) $weight = 0;
-	$data['weight']=$weight+1; // add tail list
-    } else {			// conflict check
-	$res = $xoopsDB->query("SELECT count(scid) FROM ".SHORTCUT." WHERE scid<>$scid AND weight=".$data['weight']." AND pscref=".$data['pscref']);
-	list($count)=$xoopsDB->fetchRow($res);
-	if ($count) {		// insert order
-	    $res = $xoopsDB->query("UPDATE ".SHORTCUT." SET weight=weight+1 WHERE weight>=".$data['weight']." AND pscref=".$data['pscref']);
-	}
-    }
-
-    if (empty($scid)) {
-	$data['uid']=$uid;
-	$sql = "INSERT INTO ".SHORTCUT."(".join(',',array_keys($data)).")VALUES(".join_vars($data).")";
-    } else {
-	$sql = "UPDATE ".SHORTCUT." SET ".join_vars($data, 1)." WHERE scid=".$scid;
-    }
-    $res = $xoopsDB->query($sql);
-    if ($res) {
+    if (store_entry($data, $uid)) {
 	redirect_header("index.php", 1, _MD_SHORTCUT_STOREOK);
 	exit;
     }
@@ -63,7 +43,6 @@ if (!isset($_POST['scid'])) {		// generate uniq id if empty
 	    $rand = rand(0,1000);
 	    $res = $xoopsDB->query("SELECT cutid WHERE cutid=".$xoopsDB->quoteString($cutid));
 	} while ($res && $xoopsDB->getRowsNum($res));
-	$data['active'] = _SC_ACTIVE_PUBLIC;
 	$data['cutid'] = $cutid;
     }
 }
@@ -79,7 +58,7 @@ while (list($id,$title,$url) = $xoopsDB->fetchRow($res)) {
     $pscrefs[$id] = array('title'=>$title, 'url'=>$url);
 }
 
-$xoopsTpl->assign('pscrefs', root_links($uid));
+$xoopsTpl->assign('pscrefs', root_links($uid, $scid));
 $xoopsTpl->assign('active_status', explode(',', _MD_FORM_ACTIVE_VALUE));
 
 include XOOPS_ROOT_PATH."/footer.php";

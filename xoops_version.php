@@ -1,9 +1,9 @@
 <?php
-// $Id: xoops_version.php,v 1.6 2008/06/24 14:29:22 nobu Exp $
+// $Id: xoops_version.php,v 1.7 2008/07/06 07:36:56 nobu Exp $
 // 
 $modversion =
       array('name' => _MI_SHORTCUT_NAME,
-	    'version' => 0.5,
+	    'version' => 0.6,
 	    'description' => _MI_SHORTCUT_DESC,
 	    'author' => "Nobuhiro YASUTOMI <nobuhiro.yasutomi@nifty.ne.jp>",
 	    'credits' => "Nobuhiro YASUTOMI <br/>http://mysite.ddo.jp/",
@@ -41,9 +41,21 @@ $modversion['blocks'][1]=
 	  'description' => _MI_SHORTCUT_BLOCK_MENU_DESC,
 	  'show_func' => "b_shortcut_show",
 	  'edit_func' => "b_shortcut_edit",
-	  'options' => '',
+	  'options' => '0',
+	  'template' => 'shortcut_block_menu.html');
+
+$modversion['blocks'][]=
+    array('file' => "shortcut_block.php",
+	  'name' => _MI_SHORTCUT_BLOCK_MYMENU,
+	  'description' => _MI_SHORTCUT_BLOCK_MYMENU_DESC,
+	  'show_func' => "b_shortcut_show",
+	  'edit_func' => "b_shortcut_edit",
+	  'options' => '1',
 	  'template' => 'shortcut_block_menu.html');
 
 // Menu
 $modversion['hasMain'] = 1;
+$modversion['sub'][] = array('name'=>_MI_SHORTCUT_REGISTER,
+			     'url'=>'register.php');
+
 ?>
