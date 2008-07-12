@@ -1,5 +1,5 @@
 <?php
-// $Id: main.php,v 1.3 2008/07/06 07:47:21 nobu Exp $
+// $Id: main.php,v 1.4 2008/07/12 02:38:37 nobu Exp $
 
 define("_MD_SHORTCUT_REGISTER","ショートカットの登録");
 
@@ -21,4 +21,5 @@ define("_MD_SHORTCUT_LIST","ショートカット一覧");
 define("_MD_SHORTCUT_MDATE","最終更新日");
 
 define("_MD_SHORTCUT_STOREOK","ショートカットのデータを保存しました");
+define("_MD_SHORTCUT_STORENG","データを保存に失敗しました");
 ?>

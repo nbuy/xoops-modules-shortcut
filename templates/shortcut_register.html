@@ -1,3 +1,10 @@
+<{if $errors}>
+  <div class="errorMsg">
+    <{foreach from=$errors item=errmsg}>
+      <div><{$errmsg}></div>
+    <{/foreach}>
+  </div>
+<{/if}>
 <form method="post">
   <h2><{if $link.scid}><{$smarty.const._MD_REGISTER_EDIT}><{else}><{$smarty.const._MD_REGISTER_NEW}><{/if}></h2>
   <input type="hidden" name="scid" value="<{$link.scid}>" />

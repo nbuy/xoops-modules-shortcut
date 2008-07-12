@@ -1,8 +1,9 @@
 <?php
 # register bookmark
-# $Id: register.php,v 1.4 2008/07/06 07:36:56 nobu Exp $
+# $Id: register.php,v 1.5 2008/07/12 02:38:37 nobu Exp $
 
 include "../../mainfile.php";
+include "functions.php";
 include "edit_func.php";
 
 if (!is_object($xoopsUser)) {
@@ -15,16 +16,19 @@ $uid = $xoopsUser->getVar('uid');
 
 $scid = isset($_POST['scid'])?intval($_POST['scid']):0;
 $data = post_vars();
+$msgs = array();
 
 if (isset($_POST['save'])) {
-    if (store_entry($data, $uid)) {
+    if (store_entry($data, $scid, $uid)) {
 	redirect_header("index.php", 1, _MD_SHORTCUT_STOREOK);
 	exit;
     }
+    $msgs[] = _MD_SHORTCUT_STORENG.' - '.$xoopsDB->error();
 }
 
 include XOOPS_ROOT_PATH."/header.php";
 
+$xoopsTpl->assign('errors', $msgs);
 $data['url'] = normal_url($data['url']);
 
 if (!isset($_POST['scid'])) {		// generate uniq id if empty
