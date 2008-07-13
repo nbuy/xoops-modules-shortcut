@@ -1,5 +1,5 @@
 <?php
-// $Id: admin.php,v 1.4 2008/07/06 07:47:21 nobu Exp $
+// $Id: admin.php,v 1.5 2008/07/13 12:21:14 nobu Exp $
 
 define("_AM_SHORTCUT_LIST","Resistered shortcuts");
 
@@ -12,7 +12,8 @@ define("_AM_SHORTCUT_REF","Ref.");
 define("_AM_SHORTCUT_WEIGHT","Order");
 define("_AM_SHORTCUT_OP","Operation");
 define("_AM_SHORTCUT_DEL","Delete entry. Are you sure?");
-define("_AM_SHORTCUT_GLOBAL","Global links");
+define("_AM_SHORTCUT_SUBLINKS","Sub links");
+define("_AM_SHORTCUT_IMPORT","Import module menu");
 
 define("_AM_UPDATE_TIME","Last Modified");
 

@@ -1,6 +1,6 @@
 <?php
 # register bookmark
-# $Id: register.php,v 1.5 2008/07/12 02:38:37 nobu Exp $
+# $Id: register.php,v 1.6 2008/07/13 12:21:14 nobu Exp $
 
 include "../../mainfile.php";
 include "functions.php";
@@ -47,7 +47,7 @@ if (!isset($_POST['scid'])) {		// generate uniq id if empty
 	    $rand = rand(0,1000);
 	    $res = $xoopsDB->query("SELECT cutid WHERE cutid=".$xoopsDB->quoteString($cutid));
 	} while ($res && $xoopsDB->getRowsNum($res));
-	$data['cutid'] = $cutid;
+	$data['cutid'] = cutid_default($data['url'], $xoopsUser->getVar('uid'));
     }
 }
 
@@ -67,17 +67,4 @@ $xoopsTpl->assign('active_status', explode(',', _MD_FORM_ACTIVE_VALUE));
 
 include XOOPS_ROOT_PATH."/footer.php";
 
-// make normalized URL
-function normal_url($url) {
-    $url = preg_replace("/^".preg_quote(XOOPS_URL, '/').'/', '', $url); // relative path
-    if (preg_match('/^\/modules\/([^\/]+)\//', $url, $d)) {
-	$dirname = $d[1];
-	$module_handler =& xoops_gethandler('module');
-	$module =& $module_handler->getByDirname($dirname);
-	if ($module && $module->getVar('isactive')) {
-	    $url = preg_replace('/^\/modules\/([^\/]+)\//', "[$dirname]", $url);
-	}
-    }
-    return $url;
-}
 ?>

@@ -1,5 +1,5 @@
 <?php
-# $Id: edit_func.php,v 1.2 2008/07/06 07:36:56 nobu Exp $
+# $Id: edit_func.php,v 1.3 2008/07/13 12:21:14 nobu Exp $
 
 // toplevel
 function root_links($uid, $scid) {
@@ -64,5 +64,30 @@ function store_entry(&$data, $scid, $uid) {
 	$sql = "UPDATE ".SHORTCUT." SET ".join_vars($data, 1)." WHERE scid=".$scid;
     }
     return $xoopsDB->query($sql);
+}
+
+function cutid_default($url, $uid=0) {
+    global $xoopsDB;
+    $rand = "";
+    do {
+	$cutid = substr(base64_encode(md5($uid.'-'.$url.$rand, true)), 0, 5);
+	$rand = rand(0,1000);
+	$res = $xoopsDB->query("SELECT cutid WHERE cutid=".$xoopsDB->quoteString($cutid));
+    } while ($res && $xoopsDB->getRowsNum($res));
+    return $cutid;
+}
+
+// make normalized URL
+function normal_url($url) {
+    $url = preg_replace("/^".preg_quote(XOOPS_URL, '/').'/', '', $url); // relative path
+    if (preg_match('/^\/modules\/([^\/]+)\//', $url, $d)) {
+	$dirname = $d[1];
+	$module_handler =& xoops_gethandler('module');
+	$module =& $module_handler->getByDirname($dirname);
+	if ($module && $module->getVar('isactive')) {
+	    $url = preg_replace('/^\/modules\/([^\/]+)\//', "[$dirname]", $url);
+	}
+    }
+    return $url;
 }
 ?>

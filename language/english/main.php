@@ -1,5 +1,5 @@
 <?php
-// $Id: main.php,v 1.3 2008/07/06 07:47:21 nobu Exp $
+// $Id: main.php,v 1.4 2008/07/13 12:21:14 nobu Exp $
 
 define("_MD_SHORTCUT_REGISTER","Register shortcut link");
 
@@ -21,4 +21,5 @@ define("_MD_SHORTCUT_LIST","List of shortcuts");
 define("_MD_SHORTCUT_MDATE","Last Updated");
 
 define("_MD_SHORTCUT_STOREOK","Store shortcut data in Database");
+define("_MD_SHORTCUT_STORENG","Failed store data in Database");
 ?>

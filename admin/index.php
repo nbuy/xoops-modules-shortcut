@@ -1,5 +1,5 @@
 <?php
-// $Id: index.php,v 1.8 2008/07/06 07:47:21 nobu Exp $
+// $Id: index.php,v 1.9 2008/07/13 12:21:14 nobu Exp $
 
 include '../../../include/cp_header.php';
 include_once '../functions.php';
@@ -17,8 +17,20 @@ if (isset($_POST['save'])) {
 	exit;
     }
     $op = 'reg';
+} elseif (isset($_POST['import'])) {
+    $myts =& MyTextSanitizer::getInstance();
+    if (import_module_menu($myts->stripSlashesGPC($_POST['import']), intval($_POST['weight']))) {
+	redirect_header("index.php", 1, _AM_DBUPDATED);
+	exit;
+    } else {
+	// import error
+    }
 } elseif ($op == 'delete') {
-    $xoopsDB->query("DELETE FROM ".SHORT." WHERE scid=".intval($_POST['scid']));
+    $scid = intval($_POST['scid']);
+    if ($scid) {
+	$xoopsDB->query("DELETE FROM ".SHORT." WHERE scid=$scid");
+	$xoopsDB->query("DELETE FROM ".SHORT." WHERE pscref=$scid");
+    }
     redirect_header("index.php", 1, _AM_DBUPDATED);
     exit;
 }
@@ -50,10 +62,12 @@ switch ($op) {
  case 'list':
      echo "<h4>"._AM_SHORTCUT_LIST."</h4>\n";
 
-     $ents = array('title'=>_AM_SHORTCUT_TITLE, 'url'=>_AM_SHORTCUT_URL,
+     $ents = array('title'=>_AM_SHORTCUT_TITLE,
+		   'weight'=>_AM_SHORTCUT_WEIGHT, 'url'=>_AM_SHORTCUT_URL,
 		   'modified'=>_AM_UPDATE_TIME, 'cutid'=>_AM_SHORTCUT_ID,
 		   'active'=>_AM_SHORTCUT_ACT,  'refer'=>_AM_SHORTCUT_REF,
-		   'weight'=>_AM_SHORTCUT_WEIGHT);
+		   );
+     $acts = explode(',', _MD_FORM_ACTIVE_VALUE);
      echo "<table class='outer' cellpadding='4' border='0' cellspacing='1'>\n";
      echo "<tr><th>".join('</th><th>', $ents)."</th><th>"._AM_SHORTCUT_OP."</th></tr>\n";
 
@@ -67,6 +81,7 @@ switch ($op) {
 	 }
      }
      echo "</table>\n";
+     echo import_module_select_form();
      echo "<hr/>\n";
 
  case 'edit':
@@ -85,11 +100,15 @@ switch ($op) {
 
  case 'del':
      $scid = intval($_GET['scid']);
-     $res=$xoopsDB->query('SELECT url FROM '.SHORT.' WHERE scid='.$scid);
-     list($url)=$xoopsDB->fetchRow($res);
-     echo "<div class='confirmMsg'><p>$id --&gt; ".htmlspecialchars($url).
-	 "<br/>"._AM_SHORTCUT_DEL."</p>
-<form action='index.php?op=delete' method='POST'>
+     $res=$xoopsDB->query('SELECT cutid, url, title FROM '.SHORT.' WHERE scid='.$scid);
+     list($cutid, $url, $title)=$xoopsDB->fetchRow($res);
+     $res=$xoopsDB->query('SELECT count(scid) FROM '.SHORT.' WHERE pscref='.$scid);
+     list($sub) = $xoopsDB->fetchRow($res);
+     echo "<div class='confirm'><p>"._AM_SHORTCUT_TITLE." ".htmlspecialchars($title)." ($cutid)<br />"._AM_SHORTCUT_URL.' '.htmlspecialchars(eval_url($url))."</p>";
+     if ($sub) echo "<p>"._AM_SHORTCUT_SUBLINKS." $sub</p>";
+     echo "<p>"._AM_SHORTCUT_DEL."</p>";
+
+     echo "<form action='index.php?op=delete' method='POST'>
 <input type='submit' value='"._DELETE."'/>
 <input type='hidden' name='scid' value='$scid'/>
 </form><br/>
@@ -101,6 +120,7 @@ xoops_cp_footer();
 
 function display_entry($pre, &$data, &$ents) {
     static $n=0;
+    global $acts;
     $scid = $data['scid'];
     $cutid = $data['cutid'];
     $link = shortcut_script().$cutid;
@@ -108,7 +128,7 @@ function display_entry($pre, &$data, &$ents) {
     $op = "<a href='index.php?op=edit&scid=$scid'/>".
 	_EDIT."</a> | <a href='index.php?op=del&scid=$scid'>".
 	_DELETE."</a>";
-    $data['active'] = $data['active']?_YES:_NO;
+    $data['active'] = $acts[$data['active']];
     $url = $data['url'];
     $aurl = eval_url($url);
     if (strlen($url)>40) $url = substr($url, 0, 38)."..";
@@ -120,5 +140,75 @@ function display_entry($pre, &$data, &$ents) {
     }
     $buf .= "<td>$op</td></td></tr>\n";
     return $buf;
+}
+
+function import_module_select_form() {
+    $module_handler =& xoops_gethandler('module');
+    $criteria = new Criteria('hasmain', 1);
+    $criteria->setSort('weight');
+    $modules =& $module_handler->getObjects($criteria);
+    $buf = "<select name='import'>\n";
+    foreach ($modules as $module) {
+	$dirname = htmlspecialchars($module->getVar('dirname'));
+	$name = htmlspecialchars($module->getVar('name'));
+	$buf .= "<option value='$dirname'>$name</option>\n";
+    }
+    $buf .= "</select>";
+    $form = "<form method='post'>"._AM_SHORTCUT_IMPORT." $buf ".
+	_AM_SHORTCUT_WEIGHT." <input name='weight' size='2' value='0' /> &nbsp; <input type='submit' value='"._SUBMIT."' /></form>";
+    return $form;
+}
+
+function import_module_menu($dirname, $weight) {
+    global $xoopsConfig;
+    $module_handler =& xoops_gethandler('module');
+    $module =& $module_handler->getByDirname($dirname);
+    if (!is_object($module) || !$module->getVar('hasmain')) return false;
+    $path = XOOPS_ROOT_PATH.'/modules/'.$dirname;
+    $lang = $path.'/language/'.$xoopsConfig['language'].'/modinfo.php';
+    if (!file_exists($lang)) $lang = $path.'/language/english/modinfo.php';
+    include_once $lang;
+
+    global $modversion;
+    include $path.'/xoops_version.php';
+    $sub = $modversion['sub'];
+    $url = XOOPS_URL."/modules/$dirname/";
+    $id = store_new_links($url, $module->getVar('name'), 0, $weight);
+    $n = 0;
+    foreach ($sub as $k => $v) {
+	store_new_links($url.$v['url'], $v['name'], $id, ++$n);
+    }
+    return true;
+}
+
+function store_new_links($url, $name, $pid, $weight) {
+    global $xoopsDB;
+    $url = normal_url($url);
+    $now = time();
+    $data = array('cutid'=>cutid_default($url),
+		  'url'=>$url, 'uid'=>0,
+		  'title'=>$name,
+		  'pscref'=>$pid);
+    foreach ($data as $k => $v) {
+	$data[$k] = $xoopsDB->quoteString($v);
+    }
+    if (!$pid) {
+	if (!$weight) {
+	    $res = $xoopsDB->query("SELECT max(weight) FROM ".SHORT." WHERE pscref=0 AND uid=0");
+	    list($weight) = $xoopsDB->fetchRow($res);
+	    $weight++;
+	}
+    } else {
+	if ($weight) {
+	    $res = $xoopsDB->query("SELECT weight FROM ".SHORT." WHERE pscref=$pid AND weight=$weight AND uid=0");
+	    if ($xoopsDB->getRowsNum($res)) {
+		$res = $xoopsDB->query("UPDATE ".SHORT." SET weight=weight+1 WHERE pscref=$pid AND weight>=$weight AND uid=0");
+	    }
+	}
+    }
+    $data['weight'] = $weight;
+    $data['mdate']=time();
+    $res = $xoopsDB->query("INSERT INTO ".SHORT."(".join(',', array_keys($data)).")VALUES(".join(',', $data).") ");
+    return $xoopsDB->getInsertID($res);
 }
 ?>

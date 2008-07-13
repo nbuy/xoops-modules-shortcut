@@ -1,28 +1,31 @@
 <{if $links}>
-  <ol id="shortcut_list">
+  <dl id="shortcut_list">
   <{foreach item=l from=$links}>
-    <li class="link">
+    <dt class="link"><{$l.weight}>.
       <a href="<{$l.uri}>"><{$l.title}></a> (<a href="<{$sc_script}><{$l.cutid|escape:'url'}>"><{$l.cutid|escape}></a>)
       <{if $l.owner}>
       <span class="admin">[<a href="register.php?scid=<{$l.scid}>"><{$smarty.const._EDIT}></a>]</span>
-      <{/if}>
+      <{/if}></dt>
+    <dd>
       <div class="date"><{$smarty.const._MD_SHORTCUT_MDATE}>: <{$l.modified}></div>
       <p class="description"><{$l.description}></p>
       <{if $l.sub}>
-	<ol id="shortcut_list">
+	<dl id="shortcut_list">
 	<{foreach item=s from=$l.sub}>
-	  <li class="link">
+	  <dt class="link"><{$s.weight}>)
 	    <a href="<{$s.uri}>"><{$s.title}></a> (<a href="<{$sc_script}><{$s.cutid|escape:'url'}>"><{$s.cutid|escape}></a>)
 	    <{if $s.owner}>
 	    <span class="admin">[<a href="register.php?scid=<{$s.scid}>"><{$smarty.const._EDIT}></a>]</span>
 	    <{/if}>
+	  </dt>
+	  <dd>
 	    <div class="date"><{$smarty.const._MD_SHORTCUT_MDATE}>: <{$s.modified}></div>
 	    <p class="description"><{$s.description}></p>
-	  </li>
+	  </dd>
 	<{/foreach}>
-	</ol>
+	</dl>
       <{/if}>
-    </li>
+    </dd>
   <{/foreach}>
-  </ol>
+  </dl>
 <{/if}>
