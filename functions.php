@@ -1,5 +1,5 @@
 <?php
-# $Id: functions.php,v 1.3 2008/07/06 07:36:56 nobu Exp $
+# $Id: functions.php,v 1.4 2009/10/26 08:35:45 nobu Exp $
 
 if (!defined('_SC_ACTIVE_PUBLIC')) {
 
@@ -48,7 +48,7 @@ if (!defined('_SC_ACTIVE_PUBLIC')) {
 	$marked = false;
 	while ($row = $xoopsDB->fetchArray($result)) {
 	    $pscref = $row['pscref'];
-	    $url = $row['uri'] = htmlspecialchars(eval_url($row['url']));
+	    $row['uri'] = htmlspecialchars($url = eval_url($row['url']));
 	    $current = ($url==$thispage);
 	    if (!$current && substr($url, strlen($url)-1, 1)=='/' &&
 		$url.'index.php' == $thispage) $current = true;

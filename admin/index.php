@@ -1,5 +1,5 @@
 <?php
-// $Id: index.php,v 1.9 2008/07/13 12:21:14 nobu Exp $
+// $Id: index.php,v 1.10 2009/10/26 08:35:45 nobu Exp $
 
 include '../../../include/cp_header.php';
 include_once '../functions.php';
@@ -167,16 +167,17 @@ function import_module_menu($dirname, $weight) {
     $path = XOOPS_ROOT_PATH.'/modules/'.$dirname;
     $lang = $path.'/language/'.$xoopsConfig['language'].'/modinfo.php';
     if (!file_exists($lang)) $lang = $path.'/language/english/modinfo.php';
-    include_once $lang;
+    if (file_exists($lang)) include_once $lang;
 
     global $modversion;
     include $path.'/xoops_version.php';
-    $sub = $modversion['sub'];
     $url = XOOPS_URL."/modules/$dirname/";
     $id = store_new_links($url, $module->getVar('name'), 0, $weight);
-    $n = 0;
-    foreach ($sub as $k => $v) {
-	store_new_links($url.$v['url'], $v['name'], $id, ++$n);
+    if (!empty($modversion['sub'])) {
+	$n = 0;
+	foreach ($modversion['sub'] as $k => $v) {
+	    store_new_links($url.$v['url'], $v['name'], $id, ++$n);
+	}
     }
     return true;
 }

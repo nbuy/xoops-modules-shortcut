@@ -1,5 +1,5 @@
 <?php
-# $Id: edit_func.php,v 1.3 2008/07/13 12:21:14 nobu Exp $
+# $Id: edit_func.php,v 1.4 2009/10/26 08:35:45 nobu Exp $
 
 // toplevel
 function root_links($uid, $scid) {
@@ -70,7 +70,7 @@ function cutid_default($url, $uid=0) {
     global $xoopsDB;
     $rand = "";
     do {
-	$cutid = substr(base64_encode(md5($uid.'-'.$url.$rand, true)), 0, 5);
+	$cutid = substr(base64_encode(pack('H*', md5($uid.'-'.$url.$rand))), 0, 5);
 	$rand = rand(0,1000);
 	$res = $xoopsDB->query("SELECT cutid WHERE cutid=".$xoopsDB->quoteString($cutid));
     } while ($res && $xoopsDB->getRowsNum($res));
