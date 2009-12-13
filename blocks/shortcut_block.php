@@ -1,5 +1,5 @@
 <?php
-// $Id: shortcut_block.php,v 1.3 2008/07/06 07:36:56 nobu Exp $
+// $Id: shortcut_block.php,v 1.4 2009/12/13 11:25:00 nobu Exp $
 
 function b_shortcut_show($options) {
     global $xoopsDB, $xoopsUser, $xoopsModule;
@@ -29,7 +29,7 @@ function b_shortcut_show($options) {
     
     $block['links'] = shortcut_links($uid, $thispage);
     $block['action'] = $action;
-    $block['thispage'] = $thispage;
+    $block['thispage'] = htmlspecialchars($thispage);
     return $block;
 }
 
