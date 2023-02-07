@@ -20,8 +20,8 @@ $msgs = array();
 
 if (isset($_POST['save'])) {
     if (store_entry($data, $scid, $uid)) {
-	redirect_header("index.php", 1, _MD_SHORTCUT_STOREOK);
-	exit;
+        redirect_header("index.php", 1, _MD_SHORTCUT_STOREOK);
+        exit;
     }
     $msgs[] = _MD_SHORTCUT_STORENG.' - '.$xoopsDB->error();
 }
@@ -33,21 +33,21 @@ $data['url'] = normal_url($data['url']);
 
 if (!isset($_POST['scid'])) {		// generate uniq id if empty
     if (isset($_GET['scid'])) {
-	$scid = intval($_GET['scid']);
-	$cond = "scid=".$scid;
-	if (!$xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
-	    $cond .= " AND uid=".$xoopsUser->getVar('uid');
-	}
-	$res = $xoopsDB->query('SELECT * FROM '.SHORTCUT.' WHERE '.$cond);
-	$data = $xoopsDB->fetchArray($res);
+        $scid = intval($_GET['scid']);
+        $cond = "scid=".$scid;
+        if (!$xoopsUser->isAdmin($xoopsModule->getVar('mid'))) {
+            $cond .= " AND uid=".$xoopsUser->getVar('uid');
+        }
+        $res = $xoopsDB->query('SELECT * FROM '.SHORTCUT.' WHERE '.$cond);
+        $data = $xoopsDB->fetchArray($res);
     } else {
-	$rand = "";
-	do {
-	    $cutid = substr(base64_encode(md5($xoopsUser->getVar('uid').'-'.$data['url'].$rand, true)), 0, 5);
-	    $rand = rand(0,1000);
-	    $res = $xoopsDB->query("SELECT cutid WHERE cutid=".$xoopsDB->quoteString($cutid));
-	} while ($res && $xoopsDB->getRowsNum($res));
-	$data['cutid'] = cutid_default($data['url'], $xoopsUser->getVar('uid'));
+        $rand = "";
+        do {
+            $cutid = substr(base64_encode(md5($xoopsUser->getVar('uid').'-'.$data['url'].$rand, true)), 0, 5);
+            $rand = rand(0,1000);
+            $res = $xoopsDB->query("SELECT cutid FROM ".SHORTCUT." WHERE cutid=".$xoopsDB->quoteString($cutid));
+        } while ($res && $xoopsDB->getRowsNum($res));
+        $data['cutid'] = cutid_default($data['url'], $xoopsUser->getVar('uid'));
     }
 }
 
