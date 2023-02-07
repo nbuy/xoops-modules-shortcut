@@ -2,7 +2,7 @@
   <ul class="sc_menu">
     <{foreach item=l from=$block.links}>
       <li class="<{if $l.selected}>on<{else}>off<{/if}>"><a href="<{$l.uri}>"<{if $l.current}> style="font-weight: bold;"<{/if}>><{$l.title}></a>
-	<{if $l.sub}>
+	<{if isset($l.sub)}>
 	  <ul class="sc_sub">
 	    <{foreach item=s from=$l.sub}>
 	    <li><a href="<{$s.uri}>"<{if $s.current}> style="font-weight: bold;"<{/if}>><{$s.title}></a></li>
