@@ -3,7 +3,7 @@
 // 
 $modversion =
       array('name' => _MI_SHORTCUT_NAME,
-	    'version' => 0.6,
+	    'version' => 0.7,
 	    'description' => _MI_SHORTCUT_DESC,
 	    'author' => "Nobuhiro YASUTOMI <nobuhiro.yasutomi@nifty.ne.jp>",
 	    'credits' => "Nobuhiro YASUTOMI <br/>http://mysite.ddo.jp/",
